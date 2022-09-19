@@ -73,7 +73,7 @@ ZerosGmfc = zero(Gmfc)
 %step(Gmf);
 %hold;
 %step(Gmfc);
-%legend('Sem compensa��o', 'Com compensa��o');
+%legend('Sem compensação', 'Com compensação');
 
 %Erro sistema compensado
 Y2 = GcK(X) * G(X)

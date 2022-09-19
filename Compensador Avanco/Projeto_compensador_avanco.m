@@ -11,7 +11,7 @@ Gmf=feedback(G(S),1)
 %Polos de malha fechada
 Polos = pole(Gmf)
 
-%Lugar de ra�zes de G(S)
+%Lugar de raízes de G(S)
 %rlocus(G)
 
 %Insira os polos de malha fechada dominantes
@@ -19,9 +19,9 @@ S1 = -8 + j*8.389
 S2 = -2 - 2*sqrt(3)*i
 
 %TODO: Ajustar angulo negativo
-%Verifica��o da condi��o de �ngulo
+%Verificação da condição de angulo
 Y=S1
-x=angle(G(Y))*180/pi %O resultado � em rad que � convertido para graus.
+x=angle(G(Y))*180/pi %O resultado é em rad que é convertido para graus.
 if x > 0
     phi = 180 - x
 else
@@ -40,7 +40,7 @@ Kc = 1/abs(T(Y)*G(Y))
 Gc = Kc * T(S)
 
 
-%Planta com compensa��o em malha fechada
+%Planta com compensação em malha fechada
 Gmfc=feedback(Gc*G(S),1);
 Gmfc=minreal(Gmfc)
 %Polos de MF com compensa��o
@@ -51,7 +51,7 @@ figure;
 step(Gmf);
 hold;
 step(Gmfc);
-legend('Sem compensa��o', 'Com compensa��o');
+legend('Sem compensação', 'Com compensação');
 
 %Lugar das ra�zes da planta compensada
 figure;
