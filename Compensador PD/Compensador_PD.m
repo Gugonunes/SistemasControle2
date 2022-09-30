@@ -72,7 +72,9 @@ Y(S);
 Kp = 1/abs(Y(S1))
 
 %Caso tenha 2 PD em cascata, descomente o seguinte:
-Kp = 1/abs(Y(S1))
+Y=@(S) ((Td*(S-XZero))^2)*G(S);
+Y(S);
+Kp = sqrt(1/abs(Y(S1)))
 
 
 H = tf('s');
@@ -83,6 +85,10 @@ Kpt = double(Kp);
 Tdt = double(Td);
 XZerot = double(XZero);
 Gc = @(H) Kpt * Tdt*(H - XZerot);
+Gc(H)
+
+%Caso tenha 2 PD em cascata, descomente o seguinte:
+Gc = @(H) Gc(H) * Gc(H);
 Gc(H)
 
 %Sistema compensado:

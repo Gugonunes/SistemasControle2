@@ -71,6 +71,11 @@ Y=@(S) Td*(S-XZero)*G(S);
 Y(S);
 Kp = 1/abs(Y(S1))
 
+%Caso tenha 2 PD em cascata, descomente o seguinte:
+Y=@(S) ((Td*(S-XZero))^2)*G(S);
+Y(S);
+Kp = sqrt(1/abs(Y(S1)))
+
 
 H = tf('s');
 %Portanto, a equação do compensador é:
