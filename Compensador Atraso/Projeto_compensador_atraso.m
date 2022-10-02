@@ -4,30 +4,39 @@ clc;
 
 S=tf('s');
 %Insira a G(S) abaixo:
-G=@(S) (20/((S+1)*(S+4)));
+G=@(S) (30/((S+1)*(S+5)*(S+10)));
 G(S)
-%comando de realimentaï¿½ao
-Gmf = feedback(G(S),1)
+%comando de realimentaçao
+Gmf = feedback(G(S),(2*S))
+
 %Polos de malha fechada
 Polos = pole(Gmf)
 
-%Insira o Zero escolhido(arbitrï¿½rio):
+%calculando amortecimento e wn
+syms real
+%selecione o polo com imaginario positivo
+REAL = real(Polos(2,1));
+IMAG = imag(Polos(2,1));
+phi = (atan(IMAG/REAL));
+Amortecimento1 = cos(phi)
+Wn1 = -REAL/Amortecimento1
+
+%Insira o Zero do compensador escolhido(arbitrário, ou a questão da):
 ZeroE = -0.1;
 T = 1/(-ZeroE)
 
 %Calculo de Beta:
-%calculo do Kv:
+%calculo do Kv atual do sistema:
 syms X
-Y=G(X) %aqui usa a equaï¿½ï¿½o de degrau/rampa/parabolica
+Y=G(X); %aqui usa a equação de degrau/rampa/parabolica
 Kv = vpa(limit(Y, X, 0)) %vpa retorna o decimal da resposta
-
-%TODO: ajustar funÃ§oes para cada tipo de entrada
 
 %calculando o erro em regime permanente
 erro = 1/(1+Kv) %coloca 1+kv se for degrau
+
 %Erro desejado do sistema:
-erroD=0.1;
-Kv2 = 1/erroD;
+erroD=0.05;
+Kv2 = (1/erroD) -1 %se for degrau usa -1
 divK = Kv2/Kv
 Y2= (divK)-(floor(divK));
 if Y2 < 0.5
@@ -38,78 +47,48 @@ end
 
 %calculo de BT
 BT = 1/double(B*T)
+PoloComp = -BT
 
-%Calculo de Gc(S)
+%Calculo do compensador Gc(S)
 %Gc =@(S) (S - ZeroE)/(S + BT)
-Gc =@(S) (S - ZeroE)/(S + 0.001);
+Gc =@(S) (S - ZeroE)/(S + BT);
 Gc(S)
 PoloGc = pole(Gc(S))
+
 %GcG e local de raizes
-GcG = @(S) Gc(S) * G(S);
+%A seguir serão plotadas as duas curvas juntas. Encontre o polo na linha
+%vermelha onde "Damping == Amortecimento1" e "Frequency == Wn1"
+%Após isso, encontre um polo na linha verde que fique alinhado ao polo
+%escolhido na vermelha e à origem do sistema
+
+GcG = @(S) Gc(S) * G(S) * 2*S; %se a realimentação nao for unitaria multiplique aqui
+
 GcG(S)
 figure;
-rlocus(G(S));
+rlocus(G(S), 'r');
 hold;
-rlocus(Gc(S)*G(S))
+rlocus(GcG(S), 'g')
 
-%Pegue os polos onde o amortecimento e o Wn sï¿½o os calculados e anote
-%abaixo
-PolosGcG1 = -2.46 + 4.17*j;
-PolosGcG2 = -0.312 - 0.552*j;
-%Cï¿½lculo analï¿½tico de Kc
+PolosGcG1 = -7.78 + 8.26*j;
+PolosGcG2 = -2.37 - 2.31*j;
+%Cálculo analítico de Kc (ganho do compensador)
 s=PolosGcG1;
+
 Kc=1/abs(GcG(s))
 
 %Nova Gc com o ganho vira o compensador:
-GcK = @(S) Kc * Gc(S)
+GcK = @(S) Kc * Gc(S);
+GcK(S)
 
 Gmfc=feedback(GcK(S)*G(S),1);
-%Polos de malha fechada com compensaï¿½ï¿½o
+%Polos de malha fechada com compensação
 PolosGmfc = pole(Gmfc)
 ZerosGmfc = zero(Gmfc)
 
-%Resposta ao degrau
-%figure;
-%step(Gmf);
-%hold;
-%step(Gmfc);
-%legend('Sem compensaÃ§Ã£o', 'Com compensaÃ§Ã£o');
 
 %Erro sistema compensado
-Y2 = GcK(X) * G(X)
+Y2 = GcK(X) * G(X)  %aqui usa a equação de degrau/rampa/parabolica
 KvComp = vpa(limit(Y2, X, 0)) %vpa retorna o decimal da resposta
 ErroComp = 1/KvComp
-% %Lugar das raï¿½zes da planta e planta compensada
-% figure;
-% rlocus(G);
-% legend('G(s)');
-% figure;
-% rlocus(Gc*G);
-% legend('Gc(s)G(s)');
-
-%Resposta a rampa
-Gi=tf(1,[1 0]);
-figure;
-step(Gi,'b',50);
-hold;
-step(Gi*Gmf,'r',50);
-step(Gi*Gmfc,'k',50);
-title('Ramp Response');
-legend('Referï¿½ncia','Sem compensaï¿½ï¿½o', 'Com compensaï¿½ï¿½o');
 
 
-%Erros
-[Yi t]=step(Gi,'b',linspace(0,200,2000));
-[Y1 t]=step(Gi*Gmf,'r',linspace(0,200,2000));
-[Y2 t]=step(Gi*Gmfc,'k',linspace(0,200,2000));
-erro_MF=Yi-Y1;
-erro_MF_C=Yi-Y2;
-
-%Exibe erros
-figure;
-plot(t,erro_MF,'r');
-hold;
-plot(t,erro_MF_C,'b');
-legend('Erro sem compensador','Erro com compensador');
-xlabel('t(s)');
-ylabel('Erro');
