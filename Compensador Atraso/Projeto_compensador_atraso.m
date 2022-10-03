@@ -6,7 +6,7 @@ S=tf('s');
 %Insira a G(S) abaixo:
 G=@(S) (30/((S+1)*(S+5)*(S+10)));
 G(S)
-%comando de realimentaçao
+%comando de realimentaï¿½ao
 Gmf = feedback(G(S),(2*S))
 
 %Polos de malha fechada
@@ -21,14 +21,14 @@ phi = (atan(IMAG/REAL));
 Amortecimento1 = cos(phi)
 Wn1 = -REAL/Amortecimento1
 
-%Insira o Zero do compensador escolhido(arbitrário, ou a questão da):
+%Insira o Zero do compensador escolhido(arbitrï¿½rio, ou a questï¿½o da):
 ZeroE = -0.1;
 T = 1/(-ZeroE)
 
 %Calculo de Beta:
 %calculo do Kv atual do sistema:
 syms X
-Y=G(X); %aqui usa a equação de degrau/rampa/parabolica
+Y=G(X); %aqui usa a equaï¿½ï¿½o de degrau/rampa/parabolica
 Kv = vpa(limit(Y, X, 0)) %vpa retorna o decimal da resposta
 
 %calculando o erro em regime permanente
@@ -56,12 +56,12 @@ Gc(S)
 PoloGc = pole(Gc(S))
 
 %GcG e local de raizes
-%A seguir serão plotadas as duas curvas juntas. Encontre o polo na linha
+%A seguir serï¿½o plotadas as duas curvas juntas. Encontre o polo na linha
 %vermelha onde "Damping == Amortecimento1" e "Frequency == Wn1"
-%Após isso, encontre um polo na linha verde que fique alinhado ao polo
-%escolhido na vermelha e à origem do sistema
+%Apï¿½s isso, encontre um polo na linha verde que fique alinhado ao polo
+%escolhido na vermelha e ï¿½ origem do sistema
 
-GcG = @(S) Gc(S) * G(S) * 2*S; %se a realimentação nao for unitaria multiplique aqui
+GcG = @(S) Gc(S) * G(S) * 2*S; %se a realimentaï¿½ï¿½o nao for unitaria multiplique aqui
 
 GcG(S)
 figure;
@@ -71,7 +71,7 @@ rlocus(GcG(S), 'g')
 
 PolosGcG1 = -7.78 + 8.26*j;
 PolosGcG2 = -2.37 - 2.31*j;
-%Cálculo analítico de Kc (ganho do compensador)
+%Cï¿½lculo analï¿½tico de Kc (ganho do compensador)
 s=PolosGcG1;
 
 Kc=1/abs(GcG(s))
@@ -81,13 +81,13 @@ GcK = @(S) Kc * Gc(S);
 GcK(S)
 
 Gmfc=feedback(GcK(S)*G(S),1);
-%Polos de malha fechada com compensação
+%Polos de malha fechada com compensaï¿½ï¿½o
 PolosGmfc = pole(Gmfc)
 ZerosGmfc = zero(Gmfc)
 
 
 %Erro sistema compensado
-Y2 = GcK(X) * G(X)  %aqui usa a equação de degrau/rampa/parabolica
+Y2 = GcK(X) * G(X)  %aqui usa a equaï¿½ï¿½o de degrau/rampa/parabolica
 KvComp = vpa(limit(Y2, X, 0)) %vpa retorna o decimal da resposta
 ErroComp = 1/KvComp
 

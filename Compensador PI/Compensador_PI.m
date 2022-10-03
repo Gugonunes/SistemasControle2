@@ -93,7 +93,7 @@ Gmfc = feedback(Gcg(S), 1)
 PolosComComp = pole(Gmfc)
 
 %Erro do sistema compensado(deve dar NaN no Kv e no ErroInf):
-Y2=X*Gcg(X); %aqui usa a equação de degrau/rampa/parabolica
+Y2=X*Gcg(X)*G(X); %aqui usa a equação de degrau/rampa/parabolica
 KvComp = vpa(limit(Y2, X, 0))
 erroInf=1/KvComp
 
