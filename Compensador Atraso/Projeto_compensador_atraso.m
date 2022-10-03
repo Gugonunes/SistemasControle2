@@ -70,7 +70,7 @@ hold;
 rlocus(GcG(S), 'g')
 
 PolosGcG1 = -7.78 + 8.26*j;
-PolosGcG2 = -2.37 - 2.31*j;
+PolosGcG2 = -7.78 - 8.26*j;
 %C�lculo anal�tico de Kc (ganho do compensador)
 s=PolosGcG1;
 

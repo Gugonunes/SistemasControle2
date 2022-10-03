@@ -81,6 +81,7 @@ Td = 1/abs(XZero)
 %Calculando Kc (Ganho do compensador PD)
 %caso tenha uma equação de Compensador, usar ela abaixo:
 C = @(S) ((S-XZero)^2)/S
+
 %Caso contrario use a forma padrao de Y padrao:
 %Y=@(S) Td*(S-XZero)*G(S);
 
@@ -88,10 +89,14 @@ Y=@(S) (Td*C(S))*G(S);
 
 Kc = 1/abs(Y(S1mf))
 
-GanhoCompTotal = Kc*Td
+GanhoCompTotal = Kc*Td %K e Kd
 
-GcPD = @(S) Kc*Td*(S - XZero);
-Ki = Kc*Td*(-0.1*XZero)
+%GcPD = @(S) Kc*Td*(S - XZero);
+GcPD = @(S) GanhoCompTotal*C(S)
+C(S)
+
+Kp = GanhoCompTotal*(2*(abs(XZero)))
+Ki = GanhoCompTotal*(XZero)^2
 
 %Escolhendo o zero do PI:
 %Escolhendo o zero do compensador próximo à origem:
@@ -105,12 +110,14 @@ eq2 = round((angle((S1mf + 1/Ti)/(S1mf))*180/pi), 4)
 
 %G compensador:
 GcPI = @(S) (S-ZeroComp)/S;
+GcPI(S)
 
 %G final do compensador:
 Gc = @(S) GcPI(S) * GcPD(S);
 Gc(S)
 
-Gmfc = @(S) feedback(Gc(S)*G(S), 1);
+%Se só usar o PD utilize GcPD abaixo, caso contrario use Gc
+Gmfc = @(S) feedback(GcPD(S)*G(S), 1);
 Gmfc(S)
 
 %Polos de MF finais:

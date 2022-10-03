@@ -73,7 +73,7 @@ rlocus(Gc(S)*G(S), 'g')
 
 %Polo selecionado na linha verde (incluindo o +-):
 S1 = -1.00 + 1.732*j
-S2 = -1.97 - 3.4*j
+S2 = -1.00 - 1.732*j
 
 %Insira o valor de "Gain":
 Kp = 0.800
