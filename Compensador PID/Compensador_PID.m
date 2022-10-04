@@ -4,8 +4,8 @@ clc;
 
 %Planta
 S = tf('s');
-K = 165;
-G =@(S) (K)/((S+1)*(S+2)*(S+10));
+K = 10;
+G =@(S) (K)/((S)*(S+4));
 G(S)
 %Planta sem compensação em malha fechada
 Gmf=feedback(G(S),1)
@@ -33,30 +33,34 @@ erroInf=1/Kv
 %Caso tenha o Sobressinal e o Ts, descomente:
 syms amort2 Wn2
 %Insira o mp desejado após o "=="
-Mp = exp(-(amort2*pi)/(sqrt(1-amort2*amort2))) == 0.05;
+Mp = exp(-(amort2*pi)/(sqrt(1-amort2*amort2))) == 0.163;
 Mpcalc = vpa(solve(Mp, amort2));
 amort2 = sqrt(Mpcalc(1,1)^2)
 
 %Insira o TS desejado após o "=="
-Ts = 4/(amort2*Wn2) == 2;
+Ts = 4/(amort2*Wn2) == 4;
 Tscalc = vpa(solve(Ts, Wn2));
 Wn2 = Tscalc
 
-Wn1 = double(Wn2)
-Amort1 = double(amort2)
+%Wn1 = double(Wn2)
+%Amort1 = double(amort2)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Polos Malha fechada desejados:
 %Caso ja tenha o armotecimento substitua abaixo:
+Amort1 = 0.89
+Wn1 = 1.3
 S1mf = (-Amort1*Wn1) + j*Wn1*(sqrt(1-Amort1^2))
 S2mf = (-Amort1*Wn1) - j*Wn1*(sqrt(1-Amort1^2))
 
 %Calculo do angulo
 Y=S1mf;
+%caso tenha uma equação de Compensador, usar ela abaixo(aqui vai só a parte do PD):
+C = @(S) (S+4)/S
 %está com "/Y" pq a questao pedia erro nulo para entrada degrau, entao foi
 %adicionado o integrador ('1/s') junto à G(S). 
 %Caso nao peça isso, tirar o '/Y'
-x=round((angle(G(Y)/Y)*180/pi), 4)%O resultado é em rad que é convertido para graus.
+x=round((angle(C(Y)*G(Y))*180/pi), 4)%O resultado é em rad que é convertido para graus.
 if x > 0
     phi = 180 - x
 else
@@ -72,16 +76,17 @@ end
 %Calculando o zero do compensador
 %Como dizia (s+z)^2, o '^2' indica que deve dividir o angulo por 2 nessa
 %etapa, se nao tiver o '^2' remova o '/2' abaixo
-dist = imag(S1mf) / (round((tan(phi*pi/180/2)), 4))
+dist = imag(S1mf) / (round((tan(phi*pi/180)), 4))
 XZero = real(S1mf) - dist
 
 %Equação do compensador:
+%Utiliza o zero dado se for o caso
 Td = 1/abs(XZero)
 
 %Calculando Kc (Ganho do compensador PD)
 %caso tenha uma equação de Compensador, usar ela abaixo:
-C = @(S) ((S-XZero)^2)/S
-
+C = @(S) (S+4)*(S-XZero)/S
+C(S)
 %Caso contrario use a forma padrao de Y padrao:
 %Y=@(S) Td*(S-XZero)*G(S);
 
