@@ -1,8 +1,8 @@
-%O controlador de avanÁo-atraso È usualmente empregado quando deseja-se melhoria na resposta transitÛria do sistema e reduÁ„o do erro em regime permanente
+%O controlador de avan√ßo-atraso √© usualmente empregado quando deseja-se melhoria na resposta transit√≥ria do sistema e redu√ß√£o do erro em regime permanente
 
-%O controlador de avanÁo-atraso altera o lugar das raÌzes do sistema compensado. Com isso, È possÌvel se obter os
-% polos de malha fechada desejados para definir a resposta transitÛria almejada para o sistema.
-% Esse compensador tambÈm eleva as constantes de erro est·tico do sistema. Com isso o erro em regime permanente È reduzido.
+%O controlador de avan√ßo-atraso altera o lugar das ra√≠zes do sistema compensado. Com isso, √© poss√≠vel se obter os
+% polos de malha fechada desejados para definir a resposta transit√≥ria almejada para o sistema.
+% Esse compensador tamb√©m eleva as constantes de erro est√°tico do sistema. Com isso o erro em regime permanente √© reduzido.
 
 close all;
 clear all;
@@ -12,18 +12,18 @@ clc;
 S = tf('s');
 G =@(S) 1/(S*(S+4));
 G(S)
-%Planta sem compensaÁ„o em malha fechada
+%Planta sem compensa√ß√£o em malha fechada
 Gmf=feedback(G(S),1)
-%Polos de malha fechada sem compensaÁ„o
+%Polos de malha fechada sem compensa√ß√£o
 PolosSemComp = pole(Gmf)
 
 syms amort Wn S
-%Insira o mp desejado apÛs o "=="
+%Insira o mp desejado ap√≥s o "=="
 Mp = exp(-(amort*pi)/(sqrt(1-amort*amort))) == 0.05;
 Mpcalc = single(solve(Mp, amort));
 amort = sqrt(Mpcalc(1,1)^2)
 
-%Insira o TS desejado apÛs o "=="
+%Insira o TS desejado ap√≥s o "=="
 Ts = 4/(amort*Wn) == 2;
 Tscalc = vpa(solve(Ts, Wn));
 Wn = Tscalc
@@ -34,15 +34,15 @@ S2 = (-amort*Wn) - j*Wn*(sqrt(1-amort^2))
 
 %Calculo do angulo
 Y=S1;
-x=round((angle(G(Y))*180/pi), 4)%O resultado È em rad que È convertido para graus.
+x=round((angle(G(Y))*180/pi), 4)%O resultado √© em rad que √© convertido para graus.
 if x > 0
     phi = 180 - x
 else
     phi = -180 - x    
 end
 
-%PosiÁ„o do polo do compensador:
-%Insira o Zero do avanÁo a seguir
+%Posi√ß√£o do polo do compensador:
+%Insira o Zero do avan√ßo a seguir
 ZeroComp = -0.1;
 
 if ZeroComp > real(S1)
@@ -68,31 +68,31 @@ alfa = 1/(T1*(-postF))
 
 Kc = 1/ abs( ( ((S1 - ZeroComp)/(S1 - postF)) *G(S1)))
 
-%Compensador de avanÁo
+%Compensador de avan√ßo
 S = tf('s');
 
 %substitua a seguir os valores das variaveis pelos numeros para facilitar
 %Gav =@(S) Kc * (S - ZeroComp)/(S - postF)
 Gav =@(S) 8,399 * (S+0.1)/(S+0.0998)
 Gav(S)
-%Planta compensada com avanÁo
+%Planta compensada com avan√ßo
 Gmfcav= feedback((Gav(S)*G(S)),1)
 Gmfcav= minreal(Gmfcav)
 
-%Polos de malha fechada com compensaÁ„o de avanÁo
+%Polos de malha fechada com compensa√ß√£o de avan√ßo
 PolosMF = pole(Gmfcav)
 
 %Resposta ao degrau
 step(Gmfcav,10);
-legend('Com compensaÁ„o de avanÁo');
+legend('Com compensa√ß√£o de avan√ßo');
 
 %-----------------------------------------------------------------------
 %kv
 syms X
-Y=X*G(X); %aqui usa a equaÁ„o de degrau/rampa/parabolica
+Y=X*G(X); %aqui usa a equa√ß√£o de degrau/rampa/parabolica
 Kv = vpa(limit(Y, X, 0))
 erroInf=1/Kv
-%insira o erro desejado (quest„o diz)
+%insira o erro desejado (quest√£o diz)
 erroDes = 0.2
 Y2=X.*Gav(X).*G(X);
 Kv2 = 1/erroDes
@@ -126,7 +126,7 @@ ST1 = -0.782 + 1.074*j;
 amort2 = 0.5886
 Wn2 = 1.3285
 
-%valores teÛricos
+%valores te√≥ricos
 Mp2 = exp(-(amort2*pi)/(sqrt(1-amort2*amort2)))
 Ts = 4/(amort2*Wn2)
 
@@ -134,5 +134,5 @@ Ts = 4/(amort2*Wn2)
 
 
 step(Gmfc,60);
-legend('Com compensaÁ„o de avanÁo final');
+legend('Com compensa√ß√£o de avan√ßo final');
 

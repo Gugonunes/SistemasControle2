@@ -1,3 +1,8 @@
+%O controlador de avanço é usualmente empregado quando deseja-se melhoria na resposta transitória do sistema
+
+%Para o projeto do controlador de avanço, requisitos de desempenho transitório 
+%são utilizados para a definição dos polos de malha fechada dominantes que o sistema compensado deve possuir.
+
 close all;
 clear all;
 clc;

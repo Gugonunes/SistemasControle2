@@ -1,3 +1,12 @@
+%O controlador PID pode ser empregado quando deseja-se melhorar a resposta transitória e zerar o erro em regime permanente para algum tipo de entrada
+
+%O controlador PID tem uso similar ao do controlador de avanço-atraso. A diferença é que o controlador de PID
+%é capaz de zerar o erro em regime permanente para um certo tipo de entrada enquanto o controlador de avanço-atraso apenas reduz o erro.
+
+%O controlador PID pode ter diferentes formas de implementação tais como a forma padrão C(s)=Kp(1+1Tis+Tds), 
+% a forma paralela C(s)=Kp+Kis+Kds e a forma interativa ou em série C(s)=Kc(Tds+1)(1+1Tis). 
+% Todas estas formas, caso tenham os ganhos ajustados corretamente, são equivalentes.
+
 close all;
 clear all;
 clc;

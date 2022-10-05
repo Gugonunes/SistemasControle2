@@ -10,7 +10,7 @@ clc;
 
 %Planta
 S = tf('s');
-G =@(S) 165/((S+1)*(S+2)*(S+10));
+G =@(S) 10/((S^2)+2);
 G(S)
 %Planta sem compensação em malha fechada
 Gmf=feedback(G(S),1)
@@ -35,7 +35,7 @@ Mpcalc = vpa(solve(Mp, amort2));
 amort2 = sqrt(Mpcalc(1,1)^2)
 
 %Insira o TS desejado após o "=="
-Ts = 4/(amort2*Wn2) == 2;
+Ts = 4/(amort2*Wn2) == 1;
 Tscalc = vpa(solve(Ts, Wn2));
 Wn2 = Tscalc
 
@@ -76,7 +76,7 @@ Td = 1/abs(XZero)
 Y=@(S) Td*(S-XZero)*G(S);
 Y(S);
 Kp = 1/abs(Y(S1))
-
+Ganho
 %Caso tenha 2 PD em cascata, descomente o seguinte:
 %Y=@(S) ((Td*(S-XZero))^2)*G(S);
 %Y(S);

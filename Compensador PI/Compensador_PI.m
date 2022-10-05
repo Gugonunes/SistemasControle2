@@ -1,3 +1,14 @@
+%O controlador PI pode ser utilizado quando desejamos zerar o erro em regime permanente para uma certa referência sem alterar significativamente a
+% resposta transitória do sistema original em malha fechada com realimentação unitária.
+% O controlador atinge esse objetivo inserindo um polo na origem do sistema em malha aberta e com isso,
+% se o sistema não tiver um polo na origem, este passará a ter erro nulo para entrada do tipo degrau.
+% Caso o sistema tenha um polo na origem, a inserção de um polo adicional na origem irá zerar o erro para uma entrada do tipo rampa.
+
+%No projeto para compensação do erro via controlador PI, o polo e o zero deste controlador estão próximos.
+% Todavia, é possível se fazer a compensação do erro em regime permanente ao mesmo tempo que se modifica a resposta transitória de um sistema,
+% para alguns cenários, afastando o zero do controlador da origem. Com isso, adiciona-se um polo na origem do sistema 
+% em malha aberta ao mesmo tempo em que se leva os polos dominantes do sistema em malha fechada para onde se deseja para impor o comportamento transitório almejado.
+
 close all;
 clear all;
 clc;
