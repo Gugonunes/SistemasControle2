@@ -9,7 +9,7 @@ clc;
 
 S=tf('s');
 %Insira a G(S) abaixo:
-G=@(S) 16/(S*(S+4));
+G=@(S) 1/(S*(S+3)*(S+6));
 G(S)
 %comando de realimentaçao
 Gmf=feedback(G(S),1)
@@ -18,8 +18,8 @@ Polos = pole(Gmf)
 
 %Polos Malha fechada:
 %Caso ja tenha o armotecimento substitua abaixo:
-amort2 = 0.69;
-Wn2 = 11.59;
+amort2 = 0.707;
+Wn2 = 2.83;
 
 S1 = (-amort2*Wn2) + j*Wn2*(sqrt(1-amort2^2))
 S2 = (-amort2*Wn2) - j*Wn2*(sqrt(1-amort2^2))
@@ -47,7 +47,7 @@ R = real(Y);
 I = imag(Y);
 
 %Insira o zero escolhido:
-ZeroComp = -8; %Em 99% dos casos é a parte real do polo
+ZeroComp = -2; %Em 99% dos casos é a parte real do polo
 
 dist = tan(phi*pi/180)*I;
 PoloComp = ZeroComp - dist

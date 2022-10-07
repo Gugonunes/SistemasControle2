@@ -1,3 +1,5 @@
+%https://www.notion.so/Prova-ad7c43e714d543efafb3f6d82b0427f8
+
 %Para ser utilizado, o controlador deve estar implementado na forma:
 %Gc(S) = Kp ( 1 + 1/Ti*s + Td*s)
 
@@ -25,7 +27,12 @@
 %controlador proporcional
 %2º Aumentar o ganho Kp até atingir o valor critico Kcr onde a saída
 %apresenta oscilações sustentadas.
-%3º Anotsr o valor do ganho Kcr e o periodo de oscilação Pcr
+%3º Anotar o valor do ganho Kcr e o periodo de oscilação Pcr
+%3.1 Se precisar resolve o polimonio pela tabela de Houth-Hurwitz e acha o
+%Kcr
+%Substitui esse Kcr na equação caracteristica (a de baixo) e acha as raizes
+%W = raiz positiva
+%Pcr=2*pi/W
 %4º Escolher os parametros Kp, Ti e Td de acordo com a tabela:
 
 %   TIPO DE    |        KP      |       Ti       |     Td
@@ -43,14 +50,14 @@ S=tf('s');
 %Insira a G(S) abaixo:
 %Testando Kps: 
 Kpteste = 100
-G=@(S) Kpteste*((S+2)*(S+3))/(S*(S+1)*(S+5));
+G=@(S) Kpteste/(S^2 + 2*S + 2);
 %Tipo: PID
 %Como possui polo na origem, metodo 1 nao pode ser usado (a curva 
 % nao tem forma de 'S')
 
 Gmf = feedback(G(S), 1)
 
-%step(Gmf)
+step(Gmf)
 
 %Como nao apresenta oscilaçoes, o segundo metodo nao é aplicavel
 

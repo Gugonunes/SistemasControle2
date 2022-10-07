@@ -15,8 +15,8 @@ clc;
 
 %Planta
 S = tf('s');
-K = 10;
-G =@(S) (K)/(S*(S+4));
+K = 1;
+G =@(S) (K)/((S+1));
 G(S)
 %Planta sem compensação em malha fechada
 Gmf=feedback(G(S),1)
@@ -27,9 +27,9 @@ PolosSemComp = pole(Gmf)
 %OBS: Funções com 3 polos deve-se selecionar um polo DOMINANTE abaixo!
 %Ou seja, PolosSemComp(2,1)
 syms real
-REAL = real(PolosSemComp(2,1));
-IMAG = imag(PolosSemComp(2,1));
-
+REAL = real(PolosSemComp);
+%IMAG = imag(PolosSemComp(2,1));
+IMAG = 0;
 phi1 = (atan(IMAG/REAL));
 Amort1 = cos(phi1)
 Wn1 = -REAL/Amort1
@@ -38,18 +38,20 @@ Wn1 = -REAL/Amort1
 %Caso tenha o Sobressinal e o Ts, descomente:
 syms amort2 Wn2
 %Insira o mp desejado após o "=="
-Mp = exp(-(amort2*pi)/(sqrt(1-amort2*amort2))) == 0.163;
-Mpcalc = vpa(solve(Mp, amort2));
-amort2 = sqrt(Mpcalc(1,1)^2)
+%Mp = exp(-(amort2*pi)/(sqrt(1-amort2*amort2))) == 0;
+%Mpcalc = vpa(solve(Mp, amort2))
+%amort2 = sqrt(Mpcalc(0,1)^2)
 
 %Insira o TS desejado após o "=="
-Ts = 4/(amort2*Wn2) == 4;
-Tscalc = vpa(solve(Ts, Wn2));
-Wn2 = Tscalc
+%amort2 = 1;
+%Ts = 4/(amort2*Wn2) == 1;
+%Tscalc = vpa(solve(Ts, Wn2));
+%Wn2 = Tscalc
 
-Wn1 = double(Wn2)
-Amort1 = double(amort2)
+%Wn1 = double(Wn2)
+%Amort1 = double(amort2)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Wn1=4
 
 %Polos Malha fechada:
 %Caso ja tenha o armotecimento substitua abaixo:
@@ -58,18 +60,22 @@ S2mf = (-Amort1*Wn1) - j*Wn1*(sqrt(1-Amort1^2))
 
 %kv
 syms X
-Y=X*G(X); %aqui usa a equação de degrau/rampa/parabolica
+Y=G(X); %aqui usa a equação de degrau/rampa/parabolica
 Kv = vpa(limit(Y, X, 0))
-erroInf=1/Kv
+erroInf=1/(Kv+1)
 
 %Iniciando o projeto. Deseja-se zerar o erro para entrada tipo rampa, sem
 %comprometer a resposta transitória
 
 %Escolhendo o zero do compensador próximo à origem:
-ZeroComp = -1
+ZeroComp = -0.05
 Ti = 1/abs(ZeroComp)
 
+syms Ki
+%Ki = Kp/Ti
 %G compensador:
+%Kp = double(Kp)
+
 Gc = @(S) (S-ZeroComp)/S;
 Gc(S)
 
@@ -83,11 +89,11 @@ hold;
 rlocus(Gc(S)*G(S), 'g')
 
 %Polo selecionado na linha verde (incluindo o +-):
-S1 = -1.00 + 1.732*j
+S1 = -4.00
 S2 = -1.00 - 1.732*j
 
 %Insira o valor de "Gain":
-Kp = 0.800
+Kp = 3
 
 %Portanto, Gc atualizada:
 Gc = @(S) Kp*Gc(S);
@@ -109,6 +115,6 @@ KvComp = vpa(limit(Y2, X, 0))
 erroInf=1/KvComp
 
 %Caso precise calcular o Mp e Ts final:
-figure();
-step(Gmfc)
+%figure();
+%step(Gmfc)
 
